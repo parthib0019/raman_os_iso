@@ -1,0 +1,16 @@
+[Unit]
+Description=Initialize RamanOS Live User
+DefaultDependencies=no
+Before=getty@tty1.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/useradd -m -g wheel -G video,power,storage,audio,input,tty -s /bin/bash raman
+ExecStart=/usr/bin/passwd -d raman
+# 2. Apply OS Identity dynamically
+ExecStart=/usr/bin/bash -c "echo -e 'DISTRIB_ID=RamanOS\nDISTRIB_RELEASE=rolling\nDISTRIB_DESCRIPTION=\"RamanOS\"' > etc/lsb-release"
+ExecStart=/usr/bin/bash -c "echo -e 'NAME=\"RamanOS\"\nPRETTY_NAME=\"RamanOS\"\nID=ramanos\nID_LIKE=arch\nBUILD_ID=rolling\nANSI_COLOR=\"38;2;23;147; 209\"\nHOME_URL=\"https://archlinux.org/\"\nLOGO=archlinux' > /etc/os-release"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
